@@ -1,0 +1,125 @@
+---
+interface Props {
+    title: string,
+    open: 'true'|'false';
+}
+const { title, open = 'false' } = Astro.props;
+
+import Icon from './Icon.astro';
+
+const uuid = crypto.randomUUID();
+---
+<astroblock-toggle
+    id={uuid} data-title={title} data-open={open}
+    class="grid grid-cols-[min-content_auto] items-center gap-3 w-full"
+>
+    <Icon name="chevron-right" class="cursor-pointer hover:bg-gray-100" />
+
+    <h2 class="title w-full cursor-pointer">{ title }</h2>
+
+    <div class={`
+        col-start-2
+        flex flex-col gap-6
+        w-full
+    `}>
+
+
+        <div class=`
+        content
+        hidden w-full
+        flex flex-col gap-6
+        cursor-auto
+    `>
+            <slot />
+        </div>
+    </div>
+</astroblock-toggle>
+
+<script>
+    class AstroblockToggle extends HTMLElement {
+        isOpen: string = 'false';
+
+        titleElement: HTMLElement|null = null;
+        iconElement: HTMLElement|null = null;
+        contentElement: HTMLElement|null = null;
+
+        toggle() {
+            if (this.isOpen === 'true') {
+                this.isOpen = 'false';
+            } else if (this.isOpen === 'false') {
+                this.isOpen = 'true';
+            }
+
+            this.checkState();
+        }
+
+        open() {
+            if (this.isOpen === 'true') {
+                return;
+            } else {
+                this.isOpen = 'true';
+                this.checkState();
+            }
+        }
+
+        close() {
+            if (this.isOpen === 'false') {
+                return;
+            } else {
+                this.isOpen = 'false';
+                this.checkState();
+            }
+        }
+
+        checkState() {
+            console.debug(`AstroblockToggle element has open state set to: ${this.isOpen}`);
+
+            if (!this.iconElement) {
+                throw new Error('No astroblock-icon element found.');
+            }
+
+            if (!this.contentElement) {
+                throw new Error('No .content element found.');
+            }
+
+            if (this.isOpen === 'false') {
+                this.iconElement.classList.remove('rotate-90');
+                this.contentElement.classList.replace('flex', 'hidden');
+                console.debug(`Synchronized and closed.`);
+            } else if (this.isOpen === 'true') {
+                this.iconElement.classList.add('rotate-90');
+                this.contentElement.classList.replace('hidden', 'flex');
+                console.debug(`Synchronized and opened.`);
+            }
+        }
+
+        connectedCallback() {
+            console.debug(`Running the connectedCallback for <${this.id}> astroblock-toggle element.`);
+
+            const titleEl = this.querySelector('.title');
+            if (titleEl) {
+                this.titleElement = titleEl as HTMLElement;
+                this.titleElement.addEventListener('click', () => { this.toggle() });
+            } else {
+                throw new Error(`Cannot find the titleElement in ${this.dataset.uuid}`);
+            }
+
+            const iconEl = this.querySelector('astroblock-icon');
+            if (iconEl) {
+                this.iconElement = iconEl as HTMLElement;
+                this.iconElement.addEventListener('click', () => { this.toggle() });
+            }
+
+            const contentEl = this.querySelector('.content');
+            if (contentEl) {
+                this.contentElement = contentEl as HTMLElement;
+            }
+
+            const { open } = this.dataset;
+            this.isOpen = open ?? 'false';
+            this.checkState();
+        }
+    }
+
+    customElements.define('astroblock-toggle', AstroblockToggle);
+</script>

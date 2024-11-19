@@ -1,0 +1,29 @@
+---
+interface Props {
+    color?: 'gray'|'blue'|'red'|'green'|'yellow'
+}
+const { color = 'gray' } = Astro.props;
+
+let bgColor: string = '';
+switch (color) {
+    case 'gray':
+        bgColor = 'bg-gray-100';
+        break;
+    case 'blue':
+        bgColor = 'bg-blue-100';
+        break;
+    case 'red':
+        bgColor = 'bg-red-100';
+        break;
+    case 'green':
+        bgColor = 'bg-green-100';
+        break;
+    case 'yellow':
+        bgColor = 'bg-yellow-100';
+        break;
+}
+
+---
+<div class=`rounded p-6 ${bgColor}`>
+    <slot />
+</div>
