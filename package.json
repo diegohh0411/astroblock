@@ -4,6 +4,9 @@
   "license": "MIT",
   "type": "module",
   "version": "0.0.1",
+  "exports": {
+    ".": "./src/components/index.js"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
