@@ -4,6 +4,7 @@
   "license": "MIT",
   "type": "module",
   "version": "0.0.2",
+  "main": "./src/components/index.js",
   "exports": {
     ".": "./src/components/index.js"
   },
