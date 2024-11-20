@@ -1,36 +1,35 @@
 ---
-import type { MarkdownLayoutProps } from 'astro';
 import { Image } from 'astro:assets';
 import BaseHead from "../components/BaseHead.astro";
 
-type Props = MarkdownLayoutProps<{
+type Props = {
     title: string,
     description: string,
     cover?: string;
-}>;
+};
 
-const { frontmatter } = Astro.props;
+const { title, description, cover } = Astro.props;
 ---
 <html lang="es">
     <head>
-        <BaseHead title={frontmatter.title} description={frontmatter.description} />
+        <BaseHead title={title} description={description} />
     </head>
     <body>
         <div class=`
             flex flex-col gap-6
-            min-h-screen
+            min-h-screen w-full
             pb-36
         `>
             {
-                frontmatter.cover &&
-                <Image src={frontmatter.cover} inferSize={true} alt="" class="w-full h-64 lg:h-96 object-cover" />
+                cover &&
+                <Image src={cover} inferSize={true} alt="" class="w-full h-64 lg:h-96 object-cover" />
             }
 
             <div class=`
                 flex flex-col gap-12 p-6
                 max-w-3xl mx-auto
             `>
-                <h1>{frontmatter.title}</h1>
+                <h1>{title}</h1>
 
                 <slot />
             </div>
